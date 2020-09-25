@@ -1,22 +1,8 @@
-// The Vue build version to load with the `import` command
-// (runtime-only or standalone) has been set in webpack.base.conf with an alias.
+
 import Vue from 'vue'
-import App from './App'
-import store from './store'
-import router from './router'
-import './filter/index' // permission control 权限访问控制全局拦截处理
 
-import './styles/element-variables.scss'
-import '@/styles/index.scss' // 全局样式
-import enLang from 'element-ui/lib/locale/lang/en'
-
-import './icons'
-import './permission'
-
-
-
-import qs from "qs";
-Vue.prototype.$qs = qs;
+import Cookies from 'js-cookie'
+import 'normalize.css/normalize.css'
 
 // mint-uistyles
 import MintUI from 'mint-ui'
@@ -28,10 +14,31 @@ Vue.use(MintUI)
  */
 // element-ui
 import ElementUI from 'element-ui'
-import 'element-ui/lib/theme-chalk/index.css'
-import 'element-ui/lib/index'
+import './styles/element-variables.scss'
+// import enLang from 'element-ui/lib/locale/lang/en'
 
 Vue.use(ElementUI)
+
+import '@/styles/index.scss' // 全局样式
+
+
+import App from './App'
+import store from './store'
+import router from './router'
+
+
+import './icons'
+import './permission'
+
+import './filter/index' // permission control 权限访问控制全局拦截处理
+
+
+
+import qs from "qs";
+Vue.prototype.$qs = qs;
+
+
+
 
 
 Vue.config.productionTip = false
