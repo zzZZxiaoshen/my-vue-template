@@ -5,6 +5,7 @@ function hasPermission(roles, route) {
   //检查路由是否包含meta和meta.role属性
   if (route.meta && route.meta.roles) {
     //判断route.meta.roles中是否包含角色roles中任何一个权限，如果包含则返回true
+    //注意这里是用角色去控制权限的 而不是用对应的权限点作为控制
     return roles.some(role => route.meta.roles.includes(role))
   } else {
     // 如果路由没有 meta 或 meta.roles 属性，则视为该路由不需要进行权限控制，所有用户对该路由都具有访问权限
@@ -17,6 +18,7 @@ export function filterAsyncRoutes(routes, roles) {
   const res = []
   // 遍历全部路由
   routes.forEach(route => {
+  debugger
     // 对路由进行浅拷贝，注意 children 不会拷贝，因为不需要对 children 进行判断，所以可以使用浅拷贝
     const tmp = { ...route }
     //查看是否拥有权限如果拥有权限则 将路由添加到数组中形成动态路由

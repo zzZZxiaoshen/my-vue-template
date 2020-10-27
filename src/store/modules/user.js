@@ -1,4 +1,4 @@
-import {loginByUsername, logout, getInfo} from '@/api/login'
+import {login, logout, getInfo} from '@/api/login'
 import {getToken, setToken, removeToken} from '@/utils/auth'
 
 const user = {
@@ -51,10 +51,10 @@ const user = {
   actions: {
 
     // 用户名登录
-    LoginByUsername({commit}, userInfo) {
+    login({commit}, userInfo) {
       const email = userInfo.email.trim()
       return new Promise((resolve, reject) => {
-        loginByUsername(email, userInfo.password).then(response => {
+        login(email, userInfo.password).then(response => {
           resolve(response.data)
         }).catch(error => {
           reject(error)
@@ -74,7 +74,6 @@ const user = {
           const { roles, username, avatar, desc } = data
           const roleNames = roles.map(role => role.roleName);
           data.roleNames = roleNames
-
           if (!roles || roles.length <= 0) {
             reject('getInfo: roles must be a non-null array!')
           }

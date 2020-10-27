@@ -39,7 +39,7 @@ router.beforeEach(async(to, from, next) => {
           const { roleNames } = await store.dispatch('user/getInfo')
           // 根据用户角色动态生成路由
           const accessRoutes = await store.dispatch('permission/generateRoutes', roleNames)
-          // 调用 rou ter.addRoutes 动态添加路由（动态路由）
+          // 调用 router.addRoutes 动态添加路由（动态路由）
           router.addRoutes(accessRoutes)
           // 使用 replace 访问路由，不会在 history 中留下记录
           next({ ...to, replace: true })

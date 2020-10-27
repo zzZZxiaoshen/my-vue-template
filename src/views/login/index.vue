@@ -1,6 +1,12 @@
 <template>
   <div class="login-container">
-    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" autocomplete="on" label-position="left">
+
+    <el-form ref="loginForm"
+             :model="loginForm"
+             :rules="loginRules"
+             class="login-form"
+             autocomplete="on"
+             label-position="left">
 
       <div class="title-container">
         <h3 class="title">Login Form</h3>
@@ -11,17 +17,16 @@
           <svg-icon icon-class="user" />
         </span>
         <el-input
-          ref="username"
-          v-model="loginForm.username"
-          placeholder="Username"
-          name="username"
+          ref="email"
+          v-model="loginForm.email"
+          placeholder="email"
+          name="email"
           type="text"
           tabindex="1"
           autocomplete="on"
         />
       </el-form-item>
-
-      <el-tooltip v-model="capsTooltip" content="Caps lock is On" placement="right" manual>
+      <el-tooltip v-model="capsTooltip" content="大写锁定" placement="right" manual>
         <el-form-item prop="password">
             <span class="svg-container">
               <svg-icon icon-class="password" />
@@ -46,7 +51,6 @@
       </el-tooltip>
 
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
-
     </el-form>
 
     <el-dialog title="Or connect with" :visible.sync="showDialog">
@@ -55,14 +59,16 @@
       <br>
       <br>
     </el-dialog>
+
   </div>
 </template>
 
 <script>
   import { validUsername } from '@/utils/validate'
+  import {getToken,setToken} from  '@/utils/auth'
 
   export default {
-    name: 'Login',
+    name: 'login',
     data() {
       const validateUsername = (rule, value, callback) => {
         if (!validUsername(value)) {
@@ -80,47 +86,61 @@
       }
       return {
         loginForm: {
-          username: 'admin',
+          email: '13291509295@qq.com',
           password: '123456'
         },
         loginRules: {
-          username: [{ required: true, trigger: 'blur', validator: validateUsername }],
-          password: [{ required: true, trigger: 'blur', validator: validatePassword }]
+          email: [
+            {required: true, trigger: 'blur', validator: validateUsername}
+          ],
+          password: [
+            {required: true, trigger: 'blur', validator: validatePassword}
+          ]
         },
         passwordType: 'password',
+        showDialog: false,
         capsTooltip: false,
         loading: false,
-        showDialog: false,
         redirect: undefined,
         otherQuery: {}
       }
     },
-    watch: {
+    //监听路由
+    watch:{
       $route: {
-        handler: function(route) {
-          const query = route.query
+        handler: function (route) {
+          const query =route.query
           if (query) {
-            this.redirect = query.redirect
+            this.redirect = query.redirect;
             this.otherQuery = this.getOtherQuery(query)
           }
         },
-        immediate: true
+        immediate:true
       }
     },
-    mounted() {
+    mounted: function(){
+      // 鼠标对焦
       if (this.loginForm.username === '') {
         this.$refs.username.focus()
       } else if (this.loginForm.password === '') {
         this.$refs.password.focus()
       }
+
+      if (getToken()) {
+        this.$router.push({path: '/'})
+      }
     },
     methods: {
-      checkCapslock(e) {
-        const { key } = e
-        this.capsTooltip = key && key.length === 1 && (key >= 'A' && key <= 'Z')
+    //------------------------------功能函数-----------------------------------------------------------------
+      getOtherQuery(query){
+        return Object.keys(query).reduce((acc,cur)=>{
+            if (cur !== 'redirect') {
+              acc[cur]=query[cur]
+            }
+          return acc
+        },{})
       },
       showPwd() {
-        debugger
         if (this.passwordType === 'password') {
           this.passwordType = ''
         } else {
@@ -130,37 +150,36 @@
           this.$refs.password.focus()
         })
       },
+      //判断是否是大写
+      checkCapslock(e) {
+        const { key } = e
+        this.capsTooltip = key && key.length === 1 && (key >= 'A' && key <= 'Z')
+      },
+    //-------------------------------点击事件-----------------------------------------------------------------
       handleLogin() {
         this.$refs.loginForm.validate(valid => {
           if (valid) {
-            this.loading = true
-            this.$store.dispatch('user/login', this.loginForm)
-              .then(() => {
-                this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
-                this.loading = false
+            this.$store
+              .dispatch('user/login', this.loginForm)
+              .then((data) => {
+                if (data.code == 0) {
+                  setToken(data.data.token)
+                  //根据路由进行跳转
+                  this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
+                  this.loading = false
+                }
               })
               .catch(() => {
                 this.loading = false
               })
           } else {
-            console.log('error submit!!')
             return false
           }
         })
       },
-      getOtherQuery(query) {
-        return Object.keys(query).reduce((acc, cur) => {
-          if (cur !== 'redirect') {
-            acc[cur] = query[cur]
-          }
-          return acc
-        }, {})
-      }
-
     }
   }
 </script>
-
 <style lang="scss">
   /* 修复input 背景不协调 和光标变色 */
   /* Detail see https://github.com/PanJiaChen/vue-element-admin/pull/927 */
@@ -283,3 +302,5 @@
     }
   }
 </style>
+
+

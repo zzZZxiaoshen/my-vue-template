@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 let qs = require('qs');
 
-export function loginByUsername(email, password) {
+export function login(email, password) {
   const data = {
     email,
     password
@@ -15,7 +15,7 @@ export function loginByUsername(email, password) {
 
 export function logout() {
   return request({
-    url: '/auth/logout',
+    url: '/api/admin/auth/logout',
     method: 'post'
   })
 }

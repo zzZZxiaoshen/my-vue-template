@@ -1,4 +1,4 @@
-# book-update2
+# my-vue-template
 
 > A Vue.js project
 
