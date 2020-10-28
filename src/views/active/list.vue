@@ -67,27 +67,45 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="图片" width="150" align="center">
+      <el-table-column label="图片" width="130px" align="center" >
         <template slot-scope="scope">
           <a :href="scope.row.image">
             <img
               :src="scope.row.image"
-              style="width:120px;height:180px"
+              style="width:80px;height:80px"
             >
           </a>
         </template>
       </el-table-column>
-      <el-table-column label="地址" prop="adress" width="150" align="center"/>
-      <el-table-column label="状态" prop="status" width="100" align="center"/>
-      <el-table-column label="活动类型" prop="type" align="center"/>
-      <el-table-column label="开始时间" prop="startTime" align="center"/>
-      <el-table-column label="结束时间" prop="startTime" align="center"/>
-      <el-table-column label="人数" prop="amount" align="center"/>
-      <el-table-column label="描述" prop="describe" align="center"/>
+      <el-table-column label="地址" prop="address" width="150" align="center"/>
+      <el-table-column label="活动状态" prop="status" width="100" align="center">
+        <template slot-scope="scope">
+          {{scope.row.status == "0" ? '已结束' : '进行中'}}
+        </template>
+      </el-table-column>
+      <el-table-column label="活动类型" p·rop="type" align="center">
+        <template slot-scope="scope">
+          <el-tag style="margin:0 2px" type="success">{{scope.row.tabType.typeName}}</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column label="活动时间"  align="center" width="200px">
+        <template slot-scope="scope">
+          <el-tag style="margin:2px 2px" class="tag_time" type="success">
+            <span>开始时间:{{ scope.row.startTime | timeFiler }}</span>
+          </el-tag>
+          <el-tag style="margin:2px 2px" class="tag_time" type="success">
+            <span>结束时间:{{ scope.row.endTime | timeFiler }}</span>
+          </el-tag>
+        </template>
+      </el-table-column>
 
+      <el-table-column label="人数" prop="amount" align="center"/>
+      <el-table-column label="描述"
+                       :show-overflow-tooltip = true
+       prop="describe" align="center"/>
       <el-table-column label="操作" width="120" align="center" fixed="right">
         <template slot-scope="{row}">
-          <PreviewDialog title="电子书信息" :data='row'>
+          <PreviewDialog title="活动信息" :data='row'>
             <el-button type="text" icon="el-icon-view"/>
           </PreviewDialog>
           <el-button type="text" icon="el-icon-edit" @click="handleUpdate(row)"/>
@@ -99,7 +117,7 @@
     <pagination
       v-show="total > 0"
       :total="total"
-      :page.sync="listQuery.page"
+      :pageNo.sync="listQuery.pageNo"
       :limit.sync="listQuery.pageSize"
       @pagination="refresh"
     />
@@ -110,10 +128,30 @@
   import {listActive} from '@/api/active'
   import PreviewDialog from './components/PreviewDialog'
   import Pagination from '@/components/Pagination'
+
+  import waves from '@/directive/waves' // waves directive
+  import { parseTime } from '@/utils'
   /* eslint-disable */
   export default {
     name: "ActiveList",
     components:{PreviewDialog,Pagination},
+    directives: { waves },
+    filters: {
+      timeFiler(time){
+        if (time) {
+          return parseTime(time, '{y}-{m}-{d} {h}:{i}');
+        } else {
+          return '无'
+        }
+      },
+      valueFilter(value) {
+        if (value) {
+          return value;
+        } else {
+          return  '无'
+        }
+      }
+    },
     data() {
       return {
         listQuery: {},
@@ -144,6 +182,20 @@
     created() {
       this.parseQuery()
     },
+    //监听路由数据发生变化事件
+    beforeRouteUpdate(to,from,next){
+      //比较是不是相同路由地址
+      if (to.path  ===from.path) {
+        //如果是那么判断参数是否发生变化
+
+        const newQuery = Object.assign({}, to.query)
+        const oldQuery = Object.assign({}, from.query)
+        if (JSON.stringify(newQuery) !== JSON.stringify(oldQuery)) {
+          this.getList()
+        }
+      }
+      next()
+    },
     methods: {
 //-----------------------------------------------------功能函数----------------------------------------------------
       parseQuery() {
@@ -155,7 +207,7 @@
           sort: '-id'
         };
         if (query) {
-          query.page && (query.page = Number(query.page))
+          query.pageNo && (query.pageNo = Number(query.pageNo))
           query.pageSize && (query.pageSize = Number(query.pageSize))
 
           listQuery = {
@@ -173,16 +225,13 @@
         if (!this.listQuery[k]) {
           return v;
         } else {
-          return v.replace(new RegExp(this.listQuery[k], 'ig'), v => {
-            hightlight(v);
-          })
+          return v.replace(new RegExp(this.listQuery[k], 'ig'), v => hightlight(v))
         }
       },
       // 配置路由参数回显功能函数
       refresh() {
-        // debugger
         this.$router.push({
-          path: '/book/list',
+          path: '/active/list',
           query: this.listQuery
         })
       },
@@ -191,9 +240,9 @@
         this.loading = true;
         listActive(this.listQuery).then(res => {
           const {
-            data, total
-          } = res;
-          this.list = data;
+            listData, total
+          } = res.data.data;
+          this.list = listData;
           this.total = total;
           this.loading = false;
           this.list.forEach(active => {
@@ -203,6 +252,11 @@
       },
 //-----------------------------------------------------点击事件----------------------------------------------------
       handleFilter() {
+        //根据条件请求刷新数据
+        //初始化查询条件
+        this.listQuery.page = 1;
+        //根据条件刷新页面
+        this.refresh();
       },
       forceRefresh() {
       },

@@ -23,7 +23,8 @@
     "vue": "^2.5.2",
     "vue-count-to": "1.0.13",
     "vue-router": "3.0.2",
-    "vuex": "^3.5.1"
+    "vuex": "^3.5.1",
+    "waves": "^0.1.1"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",

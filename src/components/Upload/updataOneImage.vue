@@ -2,7 +2,7 @@
     <el-upload
             class="avatar-uploader"
             :headers="headers"
-            :action="uploadImage"
+            :action="action"
             :show-file-list="false"
             :on-success="uploadAvatar">
         <img v-if="dialogImageUrl" :src=dialogImageUrl class="avatar">
@@ -12,6 +12,8 @@
 </template>
 
 <script>
+  import { getToken ,TokenKey} from '@/utils/auth'
+
     export default {
         name: "updataOneImage",
         props:{
@@ -22,19 +24,16 @@
         },
         data(){
             return {
-                uploadImage:'',
-                dialogImageUrl: undefined,
-                oBul:false
+                action: `${process.env.VUE_APP_BASE_API}/api/upload/image`
             }
         },
         created() {
-            this.uploadImage = `${this.baseURL}/api/upload/image`
-            this.dialogImageUrl = this.imageUrl === '' ? this.dialogImageUrl : this.imageUrl
+          this.dialogImageUrl= this.imageUrl === '' ? this.dialogImageUrl : this.imageUrl
         },
-
         computed: {
             headers() {
                 return {
+                  [TokenKey]:getToken()
                 }
             }
         },
@@ -42,7 +41,7 @@
             uploadAvatar: function(res) {
                 if(res.code === 0){
                     this.dialogImageUrl = res.data.path
-                    this.$emit('updateImage',res.data.path)
+                    this.$emit('onSuccess',res.data.path)
                 }else{
                     this.$message.error('图片上传失败,请联系管理员')
                 }
