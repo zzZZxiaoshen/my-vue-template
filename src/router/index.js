@@ -50,7 +50,6 @@ export const constantRoutes =[
 
         meta: { title: 'Dashboard', icon: 'dashboard' , affix: true }
       }
-
     ]
   }
 ]
@@ -67,17 +66,30 @@ export const asyncRoutes = [
       affix: true,
       roles:["admin"]
       },
-    children:[{
-      path: 'list',
-      component: () => import('@/views/active/list'),
-      name: 'ActiveList',
-      meta: {
-        title: '活动列表',
-        icon: 'list' ,
-        noCache:true,
-        roles:["admin"]
+    children:[
+      {
+        path: 'list',
+        component: () => import('@/views/active/list'),
+        name: 'ActiveList',
+        meta: {
+          title: '活动列表',
+          icon: 'list' ,
+          noCache:true,
+          roles:["admin"]
+        }
+      },
+      {
+        path: 'create',
+        component: () => import('@/views/active/create'),
+        name: 'CreateActive',
+        meta: {
+          title: '添加活动',
+          icon: 'edit' ,
+          noCache:true,
+          roles:["admin"]
+        }
       }
-    }]
+    ]
   }
 ];
 

@@ -71,7 +71,7 @@
         <template slot-scope="scope">
           <a :href="scope.row.image">
             <img
-              :src="scope.row.image"
+              :src="scope.row.image+1"
               style="width:80px;height:80px"
             >
           </a>
@@ -235,6 +235,14 @@
           query: this.listQuery
         })
       },
+      sortById(order) {
+        if (order === 'descending') { //降序
+          this.listQuery.sort = '+id';
+        } else {
+          this.listQuery.sort = '-id'
+        }
+        this.handleFilter()
+      },
 //-----------------------------------------------------网络请求----------------------------------------------------
       getList() {
         this.loading = true;
@@ -254,23 +262,37 @@
       handleFilter() {
         //根据条件请求刷新数据
         //初始化查询条件
-        this.listQuery.page = 1;
+        this.listQuery.pageNo = 1;
         //根据条件刷新页面
         this.refresh();
       },
+      // 点击按条件查询
       forceRefresh() {
+        // window.location.reload();
+        this.getList();
       },
       handleCreate() {
       },
-      sortChange() {
+      //点击触发表格排序功能
+      sortChange(key) {
+        const {prop, order} = key;
+        //descending 降序 ascending 升序
+        if (prop === 'id') {
+          this.sortById(order);
+        }
       },
-      getSortClass() {
-
+      // 获取排序点击的列 ，然后进行列表渲染 此处是为了维护css渲染class
+      getSortClass(key) {
+        const sort = this.listQuery;
+        return sort  === `+${key}` ?
+          "ascending":
+              sort === `-${key}` ?'descending':''
       },
       handleUpdate(){
       },
       handleDelete(){
-      }
+      },
+
     }
   }
 </script>

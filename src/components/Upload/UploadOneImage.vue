@@ -6,7 +6,7 @@
             :show-file-list="false"
             :on-success="uploadAvatar">
         <img v-if="dialogImageUrl" :src=dialogImageUrl class="avatar">
-        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+        <i v-else :class="isShow?'el-icon-plus avatar-uploader-icon':'el-icon-upload avatar-uploader-icon'"></i>
     </el-upload>
 
 </template>
@@ -15,15 +15,20 @@
   import { getToken ,TokenKey} from '@/utils/auth'
 
     export default {
-        name: "updataOneImage",
+        name: "uploadOneImage",
         props:{
             imageUrl:{
                 type:String,
                 default:''
             },
+            isShow:{
+              type:Boolean,
+              default:false
+            }
         },
         data(){
             return {
+                dialogImageUrl: undefined,
                 action: `${process.env.VUE_APP_BASE_API}/api/upload/image`
             }
         },

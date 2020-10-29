@@ -12,10 +12,10 @@
               <el-input v-model="formData.title" disabled/>
             </el-form-item>
           <el-form-item label="图片">
-             <update-one-image
+             <updload-one-image
                @onSuccess="onUploadSuccess"
                :imageUrl=formData.image
-             ></update-one-image>
+             ></updload-one-image>
           </el-form-item>
            <el-form-item label="地址">
             <el-input v-model="formData.address" disabled/>
@@ -57,12 +57,12 @@
 </template>
 
 <script>
-  import updateOneImage from "@/components/Upload/updataOneImage"
+  import UploadOneImage from "@/components/Upload/UploadOneImage"
   import { parseTime } from '@/utils'
 
   export default {
     name: "PreviewDialog",
-    components:{updateOneImage},
+    components:{UploadOneImage},
     props: {
       title: {
         type: String,
