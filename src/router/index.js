@@ -88,6 +88,13 @@ export const asyncRoutes = [
           noCache:true,
           roles:["admin"]
         }
+      },
+      {
+        path: 'edit/:id(\\w+)',
+        component: () => import('@/views/active/edit'),
+        name: 'EditBook',
+        meta: { title: '编辑图书', noCache: true, activeMenu: '/active/list' },
+        hidden: true
       }
     ]
   }

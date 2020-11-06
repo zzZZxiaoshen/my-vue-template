@@ -6,7 +6,7 @@ import router from '../router/index.js'
 // axios.defaults.headers = {"content-type":"application/x-www-form-urlencoded"}
 
 const service = axios.create({
-  baseURL: process.env.BASE_API, // api 的 base_url
+  baseURL: process.env.VUE_APP_BASE_API, // api 的 base_url
   timeout: 50000,// request timeout
   headers:{"content-type":"application/x-www-form-urlencoded"},
   withCredentials: true
@@ -68,7 +68,13 @@ service.interceptors.response.use(
         type: 'error',
         duration: 5 * 1000
       })
-    } else {
+    } else if (response.data.code ===3) {
+      Message({
+        message: response.data.msg,
+        type: 'error',
+        duration: 5 * 1000
+      })
+    }else {
       return response;
     }
     setTimeout(()=>{

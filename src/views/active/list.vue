@@ -83,7 +83,7 @@
           {{scope.row.status == "0" ? '已结束' : '进行中'}}
         </template>
       </el-table-column>
-      <el-table-column label="活动类型" p·rop="type" align="center">
+      <el-table-column label="活动类型" prop="typeName" align="center">
         <template slot-scope="scope">
           <el-tag style="margin:0 2px" type="success">{{scope.row.tabType.typeName}}</el-tag>
         </template>
@@ -271,8 +271,7 @@
         // window.location.reload();
         this.getList();
       },
-      handleCreate() {
-      },
+
       //点击触发表格排序功能
       sortChange(key) {
         const {prop, order} = key;
@@ -288,7 +287,11 @@
           "ascending":
               sort === `-${key}` ?'descending':''
       },
-      handleUpdate(){
+      handleCreate() {
+        this.$router.push('/active/create')
+      },
+      handleUpdate(row){
+        this.$router.push(`/active/edit/${row.id}`)
       },
       handleDelete(){
       },
