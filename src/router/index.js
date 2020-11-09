@@ -93,8 +93,76 @@ export const asyncRoutes = [
         path: 'edit/:id(\\w+)',
         component: () => import('@/views/active/edit'),
         name: 'EditBook',
-        meta: { title: '编辑图书', noCache: true, activeMenu: '/active/list' },
+        meta: { title: '编辑用户', noCache: true, activeMenu: '/active/list' },
         hidden: true
+      }
+    ]
+  },
+  {
+    path: '/sys',
+    component: Layout,
+    redirect:"/sys/list",
+    name: 'Sys',
+    meta: {
+      title: '用户管理',
+      icon: 'documentation' ,
+      affix: true,
+      roles:["admin"]
+    },
+    children:[
+      {
+        path: 'list',
+        component: () => import('@/views/sys/list'),
+        name: 'SysList',
+        meta: {
+          title: '用户列表',
+          icon: 'list' ,
+          noCache:true,
+          roles:["admin"]
+        }
+      },
+      {
+        path: 'create',
+        component: () => import('@/views/sys/create'),
+        name: 'CreateActive',
+        meta: {
+          title: '添加用户',
+          icon: 'edit' ,
+          noCache:true,
+          roles:["admin"]
+        }
+      },
+      {
+        path: 'edit/:id(\\w+)',
+        component: () => import('@/views/sys/edit'),
+        name: 'EditBook',
+        meta: { title: '编辑用户', noCache: true, activeMenu: '/sys/list' },
+        hidden: true
+      }
+    ]
+  },
+  {
+    path: '/test',
+    component: Layout,
+    redirect:"/test/list",
+    name: 'Test',
+    meta: {
+      title: '测试',
+      icon: 'documentation' ,
+      affix: true,
+      roles:["admin"]
+    },
+    children:[
+      {
+        path: 'list',
+        component: () => import('@/views/test/list'),
+        name: 'SysList',
+        meta: {
+          title: '测试',
+          icon: 'list' ,
+          noCache:true,
+          roles:["admin"]
+        }
       }
     ]
   }

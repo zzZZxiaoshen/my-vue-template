@@ -12,10 +12,11 @@
               <el-input v-model="formData.title" disabled/>
             </el-form-item>
           <el-form-item label="图片">
-             <updload-one-image
-               @onSuccess="onUploadSuccess"
-               :imageUrl=formData.image
-             ></updload-one-image>
+           <upload-one-image
+             @onSuccess="onUploadSuccess"
+             :imageUrl=formData.image
+             :isShow="false"
+           > </upload-one-image>
           </el-form-item>
            <el-form-item label="地址">
             <el-input v-model="formData.address" disabled/>
