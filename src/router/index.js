@@ -101,19 +101,19 @@ export const asyncRoutes = [
   {
     path: '/sys',
     component: Layout,
-    redirect:"/sys/list",
+    redirect:"/sys/user/list",
     name: 'Sys',
     meta: {
-      title: '用户管理',
+      title: '账户管理',
       icon: 'documentation' ,
       affix: true,
       roles:["admin"]
     },
     children:[
       {
-        path: 'list',
-        component: () => import('@/views/sys/list'),
-        name: 'SysList',
+        path: 'user/list',
+        component: () => import('@/views/sys/user/list'),
+        name: 'SysUserList',
         meta: {
           title: '用户列表',
           icon: 'list' ,
@@ -122,50 +122,37 @@ export const asyncRoutes = [
         }
       },
       {
-        path: 'create',
-        component: () => import('@/views/sys/create'),
-        name: 'CreateActive',
+        path: 'user/create',
+        component: () => import('@/views/sys/user/create'),
+        name: 'CreateUser',
         meta: {
-          title: '添加用户',
+          title: '新建用户',
           icon: 'edit' ,
           noCache:true,
           roles:["admin"]
-        }
+        },
+        hidden: true
       },
       {
-        path: 'edit/:id(\\w+)',
-        component: () => import('@/views/sys/edit'),
-        name: 'EditBook',
-        meta: { title: '编辑用户', noCache: true, activeMenu: '/sys/list' },
+        path: 'user/edit/:id(\\w+)',
+        component: () => import('@/views/sys/user/edit'),
+        name: 'EditUser',
+        meta: { title: '编辑用户', noCache: true, activeMenu: '/sys/user/list' },
         hidden: true
-      }
-    ]
-  },
-  {
-    path: '/test',
-    component: Layout,
-    redirect:"/test/list",
-    name: 'Test',
-    meta: {
-      title: '测试',
-      icon: 'documentation' ,
-      affix: true,
-      roles:["admin"]
-    },
-    children:[
+      },
       {
-        path: 'list',
-        component: () => import('@/views/test/list'),
-        name: 'SysList',
+        path: 'role/list',
+        component: () => import('@/views/sys/role/list'),
+        name: 'SysRoleList',
         meta: {
-          title: '测试',
+          title: '角色与权限',
           icon: 'list' ,
           noCache:true,
           roles:["admin"]
         }
-      }
+      },
     ]
-  }
+  },
 ];
 
 

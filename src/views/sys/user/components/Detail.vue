@@ -13,7 +13,7 @@
 
       <div class="createPost-main-container">
         <el-row>
-            <Warning/>
+<!--            <Warning/>-->
               <el-row>
                 <el-col :span="24">
                   <el-form-item prop="image" label="图片上传" style="margin-bottom: 0;" required>
@@ -84,10 +84,10 @@
   import MDinput from "@/components/MDinput/index";
   import Sticky from "@/components/Sticky/index";
   import UploadOneImage from "@/components/Upload/UploadOneImage"
-  import Warning from "./Warning"
-  import {createActive,updateActive,getActiveData} from "../../../api/active";
-  import {validURL} from "../../../utils/validate";
-  import {ymdFromat} from "../../../utils/calendar";
+  // import Warning from "./Warning"
+  import {createActive,updateActive,getActiveData} from "../../../../api/active";
+  import {validURL} from "../../../../utils/validate";
+  import {ymdFromat} from "../../../../utils/calendar";
 
   const mappingRule = {
     title:"标题",
@@ -114,7 +114,7 @@
 
     export default {
         name: "detail" ,
-        components:{MDinput,Sticky,UploadOneImage,Warning},
+        components:{MDinput,Sticky,UploadOneImage},
         props:{
           isEdit: {
             type: Boolean,

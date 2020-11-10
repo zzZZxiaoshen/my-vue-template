@@ -1,5 +1,6 @@
 <template>
-  <div class="app-container">
+  <div class="tab-container app-container">
+
     <!--用户列表页面头-->
 <!--    <div class="filter-container">-->
 <!--      <el-input-->
@@ -32,69 +33,31 @@
 <!--        新增-->
 <!--      </el-button>-->
 <!--    </div>-->
-    <!--活动列表页面头-->
-    <div class="filter-container">
-      <el-input
-        v-model="listQuery.title"
-        clearable
-        placeholder="活动名"
-        style="width: 200px;"
-        class="filter-item"
-        @keyup.enter.native="handleFilter"
-        @clear="handleFilter"
-        @blur="handleFilter"
-      />
-      <el-select
-        v-model="listQuery.status"
-        placeholder="状态"
-        clearable
-        class="filter-item"
-        style="margin-left: 5px"
-        @change="handleFilter"
-      >
-        <el-option v-for="item in statusList" :key="item.value" :label="item.label" :value="item.label"/>
-      </el-select>
-      <el-button
-        v-waves
-        class="filter-item"
-        type="primary"
-        icon="el-icon-search"
-        style="margin-left: 10px"
-        @click="forceRefresh"
-      >
-        查询
-      </el-button>
-      <el-button
-        class="filter-item"
-        type="primary"
-        icon="el-icon-edit"
-        style="margin-left: 5px"
-        @click="handleCreate"
-      >
-        新增
-      </el-button>
-    </div>
-    <!--分页-->
-    <pagination
-      v-show="total > 0"
-      :total="total"
-      :pageNo.sync="listQuery.pageNo"
-      :limit.sync="listQuery.pageSize"
-      @pagination="refresh"
-    />
+    <el-tag>mounted times ：{{ createdTimes }}</el-tag>
+    <el-alert :closable="false" style="width:200px;display:inline-block;vertical-align: middle;margin-left:30px;" title="用户列表" type="success" />
+
+<!--    用户列表渲染-->
+    <el-tabs v-model="activeName" style="margin-top:15px;" type="border-card">
+      <el-tab-pane v-for="item in tabMapOptions" :key="item.key" :label="item.label" :name="item.key">
+        <keep-alive>
+          <tab-pane v-if="activeName==item.key" :list="list" :list-query="listQuery"
+           :type="item.key" @create="showCreatedTimes" />
+        </keep-alive>
+      </el-tab-pane>
+    </el-tabs>
   </div>
 </template>
 
 <script>
   import {listSys} from '@/api/sys'
-  import Pagination from '@/components/Pagination'
   import waves from '@/directive/waves' // waves directive
+  import TabPane from './components/TabPane'
 
   import { parseTime } from '@/utils'
 
   export default {
     name: "list",
-    components:{Pagination},
+    components:{TabPane},
     directives: { waves },
     filters: {
       timeFiler(time){
@@ -114,19 +77,32 @@
     },
     data() {
       return {
-        total: 0,
-        tableKey: '',
-        list: null,
+        activeName: 'admin',
+        createdTimes: 0,
+        tabMapOptions: [
+          { label: '启用', key: '1' },
+          { label: '禁用', key: '0' },
+        ],
         listQuery: {},
         statusList:[],
-        listLoading:false
+        list:null
       }
     },
     mounted() {
-      //初始化加载用户列表数据
-      this.getList();
+      this.getList()
+    },
+    watch: {
+      activeName(val) {
+        this.listQuery.tab=val
+        this.$router.push(`${this.$route.path}?tab=${val}`)
+      }
     },
     created() {
+      // init the default selected tab
+      const tab = this.$route.query.tab
+      if (tab) {
+        this.activeName = tab
+      }
       this.parseQuery()
     },
     //监听路由数据发生变化事件
@@ -134,7 +110,6 @@
       //比较是不是相同路由地址
       if (to.path  ===from.path) {
         //如果是那么判断参数是否发生变化
-
         const newQuery = Object.assign({}, to.query)
         const oldQuery = Object.assign({}, from.query)
         if (JSON.stringify(newQuery) !== JSON.stringify(oldQuery)) {
@@ -167,6 +142,7 @@
 //---------------------------------------------------------网络请求-------------------------------------------
       getList(){
         this.loading = true;
+        // this.$emit('create') // for test
         listSys(this.listQuery).then(res => {
           const {
             listData, total
@@ -179,7 +155,7 @@
 //---------------------------------------------------------事件绑定-------------------------------------------
       refresh(){
         this.$router.push({
-          path: '/test/list',
+          path: '/sys/user/list',
           query: this.listQuery
         })
       },
@@ -196,21 +172,20 @@
         // this.getList();
       },
       handleCreate(){
-
-      },
-      sortChange(){
-
-      },
-      getSortClass(){
       },
       handleUpdate(){
       },
       handleDelete(){
+      },
+      showCreatedTimes(){
+        this.createdTimes = this.createdTimes + 1
       }
     }
   }
 </script>
 
 <style scoped>
-
+  .tab-container {
+    margin: 30px;
+  }
 </style>
