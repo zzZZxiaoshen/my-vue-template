@@ -221,7 +221,6 @@
         function hightlight(value) {
           return '<span style="color: #1890ff">' + value + '</span>'
         }
-
         if (!this.listQuery[k]) {
           return v;
         } else {

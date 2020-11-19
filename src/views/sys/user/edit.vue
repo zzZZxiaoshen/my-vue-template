@@ -1,6 +1,5 @@
 <template>
-  <sys-detail :is-edit="false"/>
-
+  <sys-detail :is-edit="true"/>
 </template>
 
 <script>

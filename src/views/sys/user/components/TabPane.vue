@@ -108,17 +108,21 @@ export default {
       default: 'admin'
     },
     list:null,
-    listQuery:{}
+    listQuery:{},
+    total: {
+      type:Number,
+      default: 0
+    }
   },
   data() {
     return {
-      total: 0,
       tableKey: '',
       statusList:[],
       listLoading:false
     }
   },
   created() {
+
   },
 
   methods: {
@@ -153,6 +157,9 @@ export default {
         path: '/sys/user/list',
         query: this.listQuery
       })
+    },
+    handleUpdate(row){
+      this.$router.push(`/sys/user/edit/${row.email}`)
     },
   }
 }

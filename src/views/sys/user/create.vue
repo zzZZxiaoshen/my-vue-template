@@ -6,7 +6,7 @@
 import SysDetail from "./components/Detail"
 
     export default {
-        name: "create、",
+        name: "create",
         components:{SysDetail}
     }
 </script>

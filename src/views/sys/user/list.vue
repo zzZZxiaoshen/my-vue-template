@@ -33,6 +33,8 @@
 <!--        新增-->
 <!--      </el-button>-->
 <!--    </div>-->
+
+    <el-button type="primary" @click="handleAddUser" style="margin-right: 30px" >New User</el-button>
     <el-tag>mounted times ：{{ createdTimes }}</el-tag>
     <el-alert :closable="false" style="width:200px;display:inline-block;vertical-align: middle;margin-left:30px;" title="用户列表" type="success" />
 
@@ -40,7 +42,7 @@
     <el-tabs v-model="activeName" style="margin-top:15px;" type="border-card">
       <el-tab-pane v-for="item in tabMapOptions" :key="item.key" :label="item.label" :name="item.key">
         <keep-alive>
-          <tab-pane v-if="activeName==item.key" :list="list" :list-query="listQuery"
+          <tab-pane v-if="activeName==item.key" :list="list" :total ="total" :list-query="listQuery"
            :type="item.key" @create="showCreatedTimes" />
         </keep-alive>
       </el-tab-pane>
@@ -77,7 +79,8 @@
     },
     data() {
       return {
-        activeName: 'admin',
+        total:0,
+        activeName: '1',
         createdTimes: 0,
         tabMapOptions: [
           { label: '启用', key: '1' },
@@ -126,7 +129,8 @@
         let listQuery = {
           pageNo: 1,
           pageSize: 10,
-          sort: '-id'
+          sort: '-id',
+          tab:1
         };
         if (query) {
           query.pageNo && (query.pageNo = Number(query.pageNo))
@@ -173,12 +177,14 @@
       },
       handleCreate(){
       },
-      handleUpdate(){
-      },
+
       handleDelete(){
       },
       showCreatedTimes(){
         this.createdTimes = this.createdTimes + 1
+      },
+      handleAddUser(){
+        this.$router.push('/sys/user/create')
       }
     }
   }

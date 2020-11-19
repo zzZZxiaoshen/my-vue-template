@@ -134,15 +134,15 @@ export const asyncRoutes = [
         hidden: true
       },
       {
-        path: 'user/edit/:id(\\w+)',
+        path: 'user/edit/:email',
         component: () => import('@/views/sys/user/edit'),
         name: 'EditUser',
-        meta: { title: '编辑用户', noCache: true, activeMenu: '/sys/user/list' },
+        meta: { title: '编辑用户', noCache: true, activeMenu: '/sys/user/list', },
         hidden: true
       },
       {
-        path: 'role/list',
-        component: () => import('@/views/sys/role/list'),
+        path: 'role/role',
+        component: () => import('@/views/sys/role/role'),
         name: 'SysRoleList',
         meta: {
           title: '角色与权限',
@@ -151,6 +151,31 @@ export const asyncRoutes = [
           roles:["admin"]
         }
       },
+    ]
+  },
+  {
+    path: '/test',
+    component: Layout,
+    redirect:"/test/test",
+    name: 'Test',
+    meta: {
+      title: 'test',
+      icon: 'documentation' ,
+      affix: true,
+      roles:["admin"]
+    },
+    children:[
+      {
+        path: 'test',
+        component: () => import('@/views/test/test'),
+        name: 'test',
+        meta: {
+          title: 'test',
+          icon: 'test' ,
+          noCache:true,
+          roles:["admin"]
+        }
+      }
     ]
   },
 ];

@@ -50,6 +50,12 @@ service.interceptors.response.use(
         type: 'error',
         duration: 5 * 1000
       })
+    }else if(response.data.code === 100102){
+      Message({
+        message: '请求参数不合法',
+        type: 'error',
+        duration: 5 * 1000
+      })
     }else if(response.data.code === 600103){
       Message({
         message: '该账户已经被删除,请联系管理员',

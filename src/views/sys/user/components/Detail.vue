@@ -7,72 +7,58 @@
                    style="margin-left: 10px" type="success"
                    class="submit-btn"
                    @click="onSubmit">
-          {{ isEdit ? '编辑活动' : '新增活动' }}
+          {{ isEdit ? '编辑用户' : '新增用户' }}
         </el-button>
       </sticky>
 
       <div class="createPost-main-container">
         <el-row>
-<!--            <Warning/>-->
+            <Warning/>
+            <el-form-item  style="margin-bottom: 40px;" prop="username" required>
               <el-row>
                 <el-col :span="24">
-                  <el-form-item prop="image" label="图片上传" style="margin-bottom: 0;" required>
-                    <upload-one-image
-                      @onSuccess="onUploadSuccess"
-                      :imageUrl=postForm.image
-                      :isShow="false"
-                    > </upload-one-image>
-                  </el-form-item>
-                </el-col>
-              </el-row>
-            <el-form-item  style="margin-bottom: 40px;" prop="title" required>
-              <el-row>
-                <el-col :span="24">
-                  <MDinput v-model="postForm.title" :maxlength="100" name="name" required>
-                    标题
+                  <MDinput v-model="postForm.username"  :maxlength="100" name="name" required>
+                   用户名
                   </MDinput>
                 </el-col>
               </el-row>
             </el-form-item>
-            <el-form-item label="活动类型">
-              <el-select v-model="postForm.type" placeholder="活动类型" @change="onSelectChange">
-                <el-option v-for="option in typeList" :label="option.label"
-                           :value="option.value" >
-                </el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="地址" prop="address" required>
-              <el-input type="input" v-model="postForm.address"></el-input>
-            </el-form-item>
-            <el-form-item label="活动时间" required>
-              <el-col :span="11">
-                <el-form-item prop="startTime">
-                  <el-date-picker type="date" placeholder="选择开始日期" v-model="postForm.startTime" style="width: 100%;"></el-date-picker>
-                </el-form-item>
-              </el-col>
-              <el-col class="line" :span="2">-</el-col>
-              <el-col :span="11">
-                <el-form-item prop="endTime">
-                  <el-date-picker placeholder="选择结束日期" v-model="postForm.endTime" style="width: 100%;"></el-date-picker>
-                </el-form-item>
-              </el-col>
-            </el-form-item>
-            <el-form-item label="活动状态" prop="status">
-              <el-switch v-model="postForm.status"></el-switch>
-            </el-form-item>
-            <el-form-item label="人数" prop="amount" required>
-              <el-input type="input" v-model="postForm.amount"></el-input>
-            </el-form-item>
-          <el-form-item label="label" prop="label" required>
-            <el-input type="input" v-model="postForm.label"></el-input>
+
+          <el-row>
+            <el-col :span="6">
+              <el-form-item label="用户状态" prop="deleted" label-width="90px" class="postInfo-container-item">
+                <el-switch v-model="postForm.deleted"></el-switch>
+              </el-form-item>
+            </el-col>
+
+            <el-col :span="10">
+              <el-form-item label="tel" prop="tel" required label-width="120px" class="postInfo-container-item">
+                <el-input type="input" v-model="postForm.tel"></el-input>
+              </el-form-item>
+            </el-col>
+
+            <el-col :span="8">
+              <el-form-item label="email" prop="email" required label-width="90px" class="postInfo-container-item">
+                <el-input type="input" v-model="postForm.email"></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+
+          <el-form-item prop="content" label="用户描述" style="margin-top:30px;margin-bottom: 30px;">
+            <Tinymce ref="editor" v-model="postForm.desc" :height="400" />
           </el-form-item>
-          <el-form-item label="描述" >
-            <el-input type="textarea" v-model="postForm.describe"></el-input>
+
+          <el-form-item prop="avatar" style="margin-bottom: 0;" required>
+            <upload-user-image
+              @onSuccess="onUploadSuccess"
+              :imageUrl=postForm.avatar
+              :isShow="false"
+            > </upload-user-image>
           </el-form-item>
-            <el-form-item>
-              <el-button type="primary" @click="submitForm('postForm')">立即创建</el-button>
-              <el-button @click="resetForm('postForm')">重置</el-button>
-            </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="submitForm('postForm')">确定</el-button>
+            <el-button @click="resetForm('postForm')">重置</el-button>
+          </el-form-item>
         </el-row>
       </div>
     </el-form>
@@ -83,38 +69,29 @@
 
   import MDinput from "@/components/MDinput/index";
   import Sticky from "@/components/Sticky/index";
-  import UploadOneImage from "@/components/Upload/UploadOneImage"
-  // import Warning from "./Warning"
-  import {createActive,updateActive,getActiveData} from "../../../../api/active";
+  import Tinymce from '@/components/Tinymce'
+  import UploadUserImage from "@/components/Upload/UploadUserImage"
+  import Warning from "./Warning"
+  import {getUser,updateUser} from "../../../../api/sys";
   import {validURL} from "../../../../utils/validate";
   import {ymdFromat} from "../../../../utils/calendar";
 
   const mappingRule = {
-    title:"标题",
-    address:"地址",
-    startTime:"开始时间",
-    endTime:"结束时间",
-    amount:"人数",
-    label:"标签",
-    image:"图片"
+    username:"用户名",
+    tel:"电话",
+    email:"邮箱",
   }
 
   const defaultForm = {
-    title:'',//标题
-    label:'',//标签
-    image:'',//图片
-    address:'',//地址
-    status:'',//状态
-    startTime:'',//开始时间
-    endTime:'',//结束时间
-    amount:'',//人数
-    describe:'',//描述
-    type:''//活动类型
+    username:'',//标题
+    avatar:'',//头像
+    deleted:'',//状态
+    desc:'',//描述
   }
 
     export default {
         name: "detail" ,
-        components:{MDinput,Sticky,UploadOneImage},
+        components:{MDinput,Sticky,UploadUserImage,Warning,Tinymce},
         props:{
           isEdit: {
             type: Boolean,
@@ -123,12 +100,11 @@
         },
       created() {
         if (this.isEdit) {
-          const id = this.$route.params && this.$route.params.id
-          this.getActive(id);
+          const email = this.$route.params && this.$route.params.email
+          this.getUser(email);
         }
       },
         data(){
-
           const validateRequire = (rule, value, callback) => {
             if (value === '') {
               this.$message({
@@ -156,26 +132,17 @@
           };
           return {
             postForm: {
-              image:'',//图片
+              avatar:'http://cdn.jiachang8.com/Fh0WS5cABxWsjJBc87i_cz2xqbIi',//图片
             },
             loading: false,
             rules: {
-              title: [{validator: validateRequire}],
-              address:[{validator: validateRequire}],
-              image:[{validator: validateSourceUri}],
-              startTime:[{validator: validateRequire}],
-              endTime:[{validator: validateRequire}],
-              amount:[{validator: validateRequire}],
-            },
-            typeList:[{label:'万里',value:9}
-                ,{label:'长城',value:10}
-                ,{label:'自由',value:11}
-                ,{label:'自在',value:12}]
+              username: [{validator: validateRequire}],
+              avatar:[{validator: validateSourceUri}],
+            }
           };
         },
 
       methods: {
-
 
 // ------------------------------------------------ 功能函数-------------------------
         toDefault() {
@@ -184,36 +151,30 @@
 
         setData(data){
           const {
-            image,
-            title,
-            tabType,
-            address,
-            startTime,
-            endTime,
-            status,
-            amount,
-            label,
-            describe
+            id,
+            username,
+            avatar,
+            deleted,
+            desc,
+            tel,
+            email
           } =data
 
           this.postForm = {
-            image,
-            title,
-            address,
-            startTime,
-            endTime,
-            status,
-            amount,
-            label,
-            describe
+            id,
+            username,
+            avatar,
+            deleted,
+            desc,
+            tel,
+            email
           }
-          this.postForm.type = tabType.typeName;
-          this.postForm.status= status ===1
+          this.postForm.deleted= deleted ===1
         },
 
 //---------------------------------------------------网络请求---------------------------------
-        getActive(id) {
-          getActiveData({id:id}).then(res=>{
+        getUser(email) {
+          getUser({email:email}).then(res=>{
             this.setData(res.data.data)
           })
         },
@@ -221,23 +182,24 @@
         //表单提交
         submitForm(formName) {
           this.$refs[formName].validate((valid) => {
-
-            function buildActive(active) {
-              active.status = active.status ? 0 : 1;
-              active.startTime = ymdFromat(active.startTime)
-              active.endTime = ymdFromat(active.endTime)
-              active.describe = active.describe ===undefined? '暂无' : active.describe;
+            function buildUser(user) {
+              user.deleted = user.deleted ? 1 : 0;
+              user.desc = fnCleanStrTags(user.desc)
             }
 
+             function fnCleanStrTags (str) {
+              let s = str.replace(/<.*?>/ig,"");
+              return s;
+            }
             if (valid) {
               this.loading = true;
-              const active = Object.assign({}, this.postForm);
+              const user = Object.assign({}, this.postForm);
               //修改状态属性
-              buildActive(active)
+              buildUser(user)
               if (!this.isEdit) {
-                // 新增活动
-                createActive(active).then(res => {
-                  console.log('createActive', res)
+                // 新增用户
+                createUser(user).then(res => {
+                  console.log('createUser', res)
                   this.loading = false;
                   this.$notify({
                     title: '成功',
@@ -245,14 +207,14 @@
                     type: "success",
                     duration: 2000
                   });
-                  this.toDefault();
+                  this.$router.push('/sys/user/list')
                 }).catch(() => {
                   this.loading = false
                 });
               } else {
                 //编辑书籍
-                updateActive(active).then(res=>{
-                  console.log('updateActive', res)
+                updateUser(user).then(res=>{
+                  console.log('updateUser', res)
                   this.loading = false;
                   this.$notify({
                     title: '成功',
@@ -260,13 +222,12 @@
                     type: "success",
                     duration: 2000
                   });
-                  this.toDefault();
+                  this.$router.push('/sys/user/list')
                 }).catch(() => {
                   this.loading = false
                 });
               }
             } else {
-
               console.log('error submit!!');
               return callback()
             }
@@ -282,7 +243,7 @@
         //图片上传回调函数
         onUploadSuccess(url){
           console.log("图片上传成功:"+url)
-          this.postForm.image =url
+          this.postForm.avatar =url
         },
         // 下拉框事件
         onSelectChange(option){
@@ -304,6 +265,9 @@
         display: flex;
         align-items: center;
         justify-content: center;
+      }
+      .postInfo-container-item {
+        float: left;
       }
     }
   }
