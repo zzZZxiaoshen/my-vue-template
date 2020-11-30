@@ -51,3 +51,22 @@ export function listPermission() {
     method: 'post',
   })
 }
+
+//新增角色
+export function createRole(role) {
+  return request({
+    url: '/api/role/add',
+    method: 'post',
+    data:qs.stringify(role)
+  })
+}
+
+//新增角色关联权限
+export function savePermissionTree(treePermVos) {
+  return request({
+    url: '/api/tree/save',
+    method: 'post',
+    headers:{"content-type":"application/json;charset=UTF-8"},
+    data:treePermVos
+  })
+}

@@ -36,12 +36,12 @@
       @pagination="refresh"
     />
 
-    <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'Edit Role':'New Role'">
-      <el-form :model="role" label-width="80px" label-position="left">
-        <el-form-item label="roleName">
+    <el-dialog :visible.sync="dialogVisible"  :title="dialogType==='edit'?'Edit Role':'New Role'">
+      <el-form :model="role" label-width="80px" :rules="rules" label-position="left"  ref="postForm" >
+        <el-form-item label="roleName" prop="roleName" >
           <el-input v-model="role.roleName" placeholder="Role Name"/>
         </el-form-item>
-        <el-form-item label="remark">
+        <el-form-item label="remark" prop="remark">
           <el-input
             v-model="role.remark"
             :autosize="{ minRows: 2, maxRows: 4}"
@@ -63,7 +63,7 @@
       </el-form>
       <div style="text-align:right;">
         <el-button type="danger" @click="dialogVisible=false">Cancel</el-button>
-        <el-button type="primary" @click="confirmRole">Confirm</el-button>
+        <el-button type="primary" @click="confirmRole('postForm')" v-loading="loading">Confirm</el-button>
       </div>
     </el-dialog>
   </div>
@@ -71,7 +71,8 @@
 
 <script>
   import path from 'path'
-  import {listRole, listPermission} from '@/api/sys.js'
+  import { deepClone } from '@/utils'
+  import {listRole, listPermission,createRole,savePermissionTree} from '@/api/sys.js'
   import Pagination from '@/components/Pagination'
 
   const defaultRole = {
@@ -80,13 +81,29 @@
     routes: []
   }
 
+  const mappingRule={
+    roleName:"角色名称",
+    remark:"备注",
+  }
+
   export default {
     name: "role",
     components: {Pagination},
     data() {
+      const validateRequire = (rule, value, callback) => {
+        if (value === '') {
+          this.$message({
+            message: mappingRule[rule.field] + '为必传项', type: 'error'
+          })
+          callback(new Error(mappingRule[rule.field] + '为必传项'))
+        } else {
+          callback()
+        }
+      }
       return {
         rolesList: [],
         routes: [],
+        routesCheckArr:[],
         role: {},
         loading: false,
         listQuery: {},
@@ -97,6 +114,10 @@
         defaultProps: {
           children: 'children',
           label: 'title'
+        },
+        rules: {
+        roleName:[{validator:validateRequire}],
+        remark:[{validator:validateRequire}]
         }
       }
     },
@@ -116,6 +137,22 @@
     },
     methods: {
       //-------------------------------------------------------功能函数----------------------------------------------------
+      generateRoutesCheck(routes, basePath = '/', checkedKeys,roleId) {
+        for (const route of routes) {
+          const path = route.permission;
+          if (checkedKeys.includes(path)) {
+            console.log(path)
+            let saveRoute = {};
+            saveRoute.roleId = roleId
+            saveRoute.permId = route.id
+            this.routesCheckArr.push(saveRoute)
+          }
+          // recursive child routes
+          if (route.children) {
+            this.generateRoutesCheck(route.children, null, checkedKeys, roleId)
+          }
+        }
+      },
       // reference: src/view/layout/components/Sidebar/SidebarItem.vue
       onlyOneShowingChild(children = [], parent) {
         let onlyOneChild = null
@@ -197,8 +234,11 @@
 
           //处理替换后端返回不符合要求权限路由字符串信息
           this.replaceRouteInfo(data.permissionDtos);
+          // 保存业务层返回的路由数据结构
+          this.serviceRoutes = data.permissionDtos
           //生成路由
           this.routes = this.generateRoutes(data.permissionDtos)
+
         })
       },
       //请求角色
@@ -236,8 +276,24 @@
       refresh() {
 
       },
-      confirmRole() {
-
+      //新增角色 保存角色按钮
+       confirmRole(formName) {
+        console.log("保存角色")
+        this.loading = true;
+        //构建保存角色信息
+        const role = Object.assign({}, this.role);
+        debugger
+        this.$refs[formName].validate(async(validate)=>{
+        const {data} = await createRole(role)
+        const roleId = data.data.roleId
+        this.rolesList.push(this.role)
+        this.loading = false;
+        this.dialogVisible = false
+        //构建保存路由权限信息
+        const checkedKeys = this.$refs.tree.getCheckedKeys()
+        this.generateRoutesCheck(deepClone(this.serviceRoutes), '/', checkedKeys,roleId)
+        await savePermissionTree(this.routesCheckArr)
+        })
       }
     }
   }
