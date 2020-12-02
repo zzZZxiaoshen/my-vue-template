@@ -62,12 +62,14 @@ service.interceptors.response.use(
         type: 'error',
         duration: 5 * 1000
       })
-    }else if(response.data.code === 402){
+    }else if(response.data.code === 401){
       Message({
         message: '该用户没有此操作权限，请联系管理员',
         type: 'error',
         duration: 5 * 1000
       })
+      //根据路由进行跳转
+      router.push('/401')
     }else if (response.data.code ===600104) {
       Message({
         message: '用户名或者密码错误',

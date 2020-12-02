@@ -150,7 +150,6 @@
               username: [{validator: validateRequire}],
               avatar:[{validator: validateSourceUri}],
             },
-            value1:'',
             options:[],
           };
         },

@@ -64,7 +64,7 @@ export const asyncRoutes = [
       title: '活动管理',
       icon: 'documentation' ,
       affix: true,
-      roles:["admin"]
+      roles:["admin","测试"]
       },
     children:[
       {
@@ -75,7 +75,7 @@ export const asyncRoutes = [
           title: '活动列表',
           icon: 'list' ,
           noCache:true,
-          roles:["admin"]
+          roles:["admin","测试"]
         }
       },
       {
@@ -158,6 +158,7 @@ export const asyncRoutes = [
     component: Layout,
     redirect:"/test/test",
     name: 'Test',
+    hidden: true,
     meta: {
       title: 'test',
       icon: 'documentation' ,
@@ -169,6 +170,7 @@ export const asyncRoutes = [
         path: 'test',
         component: () => import('@/views/test/test'),
         name: 'test',
+        hidden: true,
         meta: {
           title: 'test',
           icon: 'test' ,

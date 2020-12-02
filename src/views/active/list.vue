@@ -71,7 +71,7 @@
         <template slot-scope="scope">
           <a :href="scope.row.image">
             <img
-              :src="scope.row.image+1"
+              :src="scope.row.image"
               style="width:80px;height:80px"
             >
           </a>

@@ -223,19 +223,24 @@
         //表单提交
         submitForm(formName) {
           this.$refs[formName].validate((valid) => {
-
-            function buildActive(active) {
+            function buildActive(active,typeList) {
               active.status = active.status ? 0 : 1;
               active.startTime = ymdFromat(active.startTime)
               active.endTime = ymdFromat(active.endTime)
               active.describe = active.describe ===undefined? '暂无' : active.describe;
+              const type= typeList.find(function (item) {
+                if (item.label===active.type.replace(/\s+/g,"")) {
+                return item
+                }
+              })
+              active.type = type.value
             }
 
             if (valid) {
               this.loading = true;
               const active = Object.assign({}, this.postForm);
               //修改状态属性
-              buildActive(active)
+              buildActive(active,this.typeList)
               if (!this.isEdit) {
                 // 新增活动
                 createActive(active).then(res => {
@@ -247,7 +252,7 @@
                     type: "success",
                     duration: 2000
                   });
-                  this.toDefault();
+                  this.$router.push('/active/list')
                 }).catch(() => {
                   this.loading = false
                 });
@@ -262,7 +267,7 @@
                     type: "success",
                     duration: 2000
                   });
-                  this.toDefault();
+                  this.$router.push('/active/list')
                 }).catch(() => {
                   this.loading = false
                 });

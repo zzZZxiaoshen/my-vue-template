@@ -39,6 +39,7 @@ export function ymd(times){
 
 // 返回 y-m-d
 export function ymdFromat(times){
+  times = new Date(parseInt(times));
 	let _month = parseInt(times.getMonth()) < 10 ? `0${times.getMonth()+1}` : times.getMonth()+1
 	let _date = parseInt(times.getDate()) < 10 ? `0${times.getDate()}` : times.getDate()
 	return `${times.getFullYear()}-${_month}-${_date}`

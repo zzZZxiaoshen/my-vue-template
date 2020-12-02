@@ -28,19 +28,20 @@
         },
         data(){
             return {
-                dialogImageUrl: undefined,
+                // dialogImageUrl: null,
                 action: `${process.env.VUE_APP_BASE_API}/api/upload/image`
             }
         },
-        created() {
-          this.dialogImageUrl= this.imageUrl === '' ? this.dialogImageUrl : this.imageUrl
-        },
+
         computed: {
             headers() {
                 return {
                   [TokenKey]:getToken()
                 }
-            }
+            },
+          dialogImageUrl(){
+           return  this.imageUrl === '' ? null: this.imageUrl
+          }
         },
         methods:{
             uploadAvatar: function(res) {
