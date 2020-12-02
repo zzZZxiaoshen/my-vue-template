@@ -126,6 +126,7 @@
           const id = this.$route.params && this.$route.params.id
           this.getActive(id);
         }
+
       },
         data(){
 
@@ -217,6 +218,7 @@
             this.setData(res.data.data)
           })
         },
+
 //---------------------------------------------------事件绑定---------------------------------
         //表单提交
         submitForm(formName) {

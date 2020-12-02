@@ -32,7 +32,6 @@
       :total="total"
       :pageNo.sync="listQuery.pageNo"
       :limit.sync="listQuery.pageSize"
-      :hidden="true"
       @pagination="refresh"
     />
 
@@ -137,7 +136,14 @@
     },
     methods: {
       //-------------------------------------------------------功能函数----------------------------------------------------
-      generateRoutesCheck(routes, basePath = '/', checkedKeys,roleId) {
+      // 配置路由参数回显功能函数
+      refresh() {
+        this.$router.push({
+          path: '/sys/role/role',
+          query: this.listQuery
+        })
+      },
+      generateRoutesCheck(routes, checkedKeys,roleId) {
         for (const route of routes) {
           const path = route.permission;
           if (checkedKeys.includes(path)) {
@@ -149,7 +155,7 @@
           }
           // recursive child routes
           if (route.children) {
-            this.generateRoutesCheck(route.children, null, checkedKeys, roleId)
+            this.generateRoutesCheck(route.children, checkedKeys, roleId)
           }
         }
       },
@@ -212,8 +218,6 @@
         let listQuery = {
           pageNo: 1,
           pageSize: 10,
-          sort: '-id',
-          tab: 1
         };
         if (query) {
           query.pageNo && (query.pageNo = Number(query.pageNo))
@@ -264,35 +268,61 @@
         this.dialogVisible = true
       },
       //角色编辑
-      handleEdit() {
+      handleEdit(scope) {
+        function replaceRoute(sysPermissions) {
+          for (let sysPermission of sysPermissions) {
+            sysPermission.permission= sysPermission.permission.replace(/\:/g, '/')
+          }
+        }
+       function translateRoutesCheck(sysPermissions,routesCheckArr){
+            routesCheckArr = []
+            for (const sysPermission of sysPermissions) {
+              let checkPer = {};
+              checkPer.path =sysPermission.permission
+              checkPer.title =sysPermission.name
+              routesCheckArr.push(checkPer)
+            }
+            console.log(routesCheckArr)
+             return routesCheckArr;
+          }
         this.dialogType = 'edit'
         this.dialogVisible=true
         this.checkStrictly=true
-
+        this.role = deepClone(scope.row)
+        this.$nextTick(() =>{
+          //处理替换后端返回不符合要求权限路由字符串信息
+          replaceRoute(this.role.sysPermissions);
+          this.$refs.tree.setCheckedNodes(translateRoutesCheck(this.role.sysPermissions, this.routesCheckArr))
+          // set checked state of a node not affects its father and child nodes
+          this.checkStrictly = false
+        })
       },
       handleDelete() {
-
-      },
-      refresh() {
 
       },
       //新增角色 保存角色按钮
        confirmRole(formName) {
         console.log("保存角色")
+       const isEdit = this.dialogType === 'edit'
         this.loading = true;
         //构建保存角色信息
         const role = Object.assign({}, this.role);
-        debugger
         this.$refs[formName].validate(async(validate)=>{
-        const {data} = await createRole(role)
-        const roleId = data.data.roleId
-        this.rolesList.push(this.role)
+          let roleId;
+          if (isEdit) {
+            roleId= this.role.id
+          } else {
+            const {data} = await createRole(role);
+            roleId = data.data.roleId;
+          }
         this.loading = false;
         this.dialogVisible = false
         //构建保存路由权限信息
         const checkedKeys = this.$refs.tree.getCheckedKeys()
-        this.generateRoutesCheck(deepClone(this.serviceRoutes), '/', checkedKeys,roleId)
+        this.routesCheckArr = [];
+        this.generateRoutesCheck(deepClone(this.serviceRoutes), checkedKeys,roleId)
         await savePermissionTree(this.routesCheckArr)
+        window.location.reload();
         })
       }
     }

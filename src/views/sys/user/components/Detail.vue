@@ -43,7 +43,16 @@
               </el-form-item>
             </el-col>
           </el-row>
-
+          <el-form-item label="角色">
+            <el-select v-model="postForm.ids"  label-width="90px" style="width:150px"  size="small" multiple placeholder="请选择">
+              <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
           <el-form-item prop="content" label="用户描述" style="margin-top:30px;margin-bottom: 30px;">
             <Tinymce ref="editor" v-model="postForm.desc" :height="400" />
           </el-form-item>
@@ -72,7 +81,7 @@
   import Tinymce from '@/components/Tinymce'
   import UploadUserImage from "@/components/Upload/UploadUserImage"
   import Warning from "./Warning"
-  import {getUser,updateUser} from "../../../../api/sys";
+  import {getUser,updateUser,listAllRole} from "../../../../api/sys";
   import {validURL} from "../../../../utils/validate";
   import {ymdFromat} from "../../../../utils/calendar";
 
@@ -103,6 +112,8 @@
           const email = this.$route.params && this.$route.params.email
           this.getUser(email);
         }
+        // 加载角色列表数据
+        this.getAllRoles();
       },
         data(){
           const validateRequire = (rule, value, callback) => {
@@ -138,7 +149,9 @@
             rules: {
               username: [{validator: validateRequire}],
               avatar:[{validator: validateSourceUri}],
-            }
+            },
+            value1:'',
+            options:[],
           };
         },
 
@@ -157,9 +170,14 @@
             deleted,
             desc,
             tel,
-            email
+            email,
+            roles
           } =data
-
+          //转换后端返回角色数据格式 用于页面渲染
+          let ids = []
+          for (const role of roles) {
+            ids.push(role.id)
+          }
           this.postForm = {
             id,
             username,
@@ -167,15 +185,28 @@
             deleted,
             desc,
             tel,
-            email
+            email,
+            ids
           }
-          this.postForm.deleted= deleted ===1
+            this.postForm.deleted= deleted ===1
         },
 
 //---------------------------------------------------网络请求---------------------------------
         getUser(email) {
           getUser({email:email}).then(res=>{
             this.setData(res.data.data)
+          })
+        },
+        getAllRoles(){
+          listAllRole().then(res=>{
+          const roles = res.data.data
+            for (const role of roles) {
+              const option ={
+                value:role.id,
+                label:role.roleName,
+              }
+              this.options.push(option)
+            }
           })
         },
 //---------------------------------------------------事件绑定---------------------------------
@@ -185,8 +216,11 @@
             function buildUser(user) {
               user.deleted = user.deleted ? 1 : 0;
               user.desc = fnCleanStrTags(user.desc)
+              if (user.ids) {
+                let idsStr = user.ids.join(",");
+                user.ids=idsStr
+              }
             }
-
              function fnCleanStrTags (str) {
               let s = str.replace(/<.*?>/ig,"");
               return s;
@@ -212,7 +246,7 @@
                   this.loading = false
                 });
               } else {
-                //编辑书籍
+                //编辑用户
                 updateUser(user).then(res=>{
                   console.log('updateUser', res)
                   this.loading = false;

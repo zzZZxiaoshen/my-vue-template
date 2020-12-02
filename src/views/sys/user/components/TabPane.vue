@@ -25,7 +25,7 @@
         <template slot-scope="scope">
           <a :href="scope.row.avatar">
             <img
-              :src="scope.row.avatar+1"
+              :src="scope.row.avatar"
               style="width:80px;height:80px"
             >
           </a>
@@ -116,6 +116,7 @@ export default {
   },
   data() {
     return {
+
       tableKey: '',
       statusList:[],
       listLoading:false

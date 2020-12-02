@@ -44,20 +44,19 @@ export function listRole(listQuery) {
   })
 }
 
-//权限路由接口
-export function listPermission() {
-  return request({
-    url: '/api/tree/empty/permission',
-    method: 'post',
-  })
-}
-
 //新增角色
 export function createRole(role) {
   return request({
     url: '/api/role/add',
     method: 'post',
     data:qs.stringify(role)
+  })
+}
+// 查询所有角色
+export function listAllRole(role) {
+  return request({
+    url: '/api/role/all/list',
+    method: 'post',
   })
 }
 
@@ -68,5 +67,13 @@ export function savePermissionTree(treePermVos) {
     method: 'post',
     headers:{"content-type":"application/json;charset=UTF-8"},
     data:treePermVos
+  })
+}
+
+//权限路由接口
+export function listPermission() {
+  return request({
+    url: '/api/tree/empty/permission',
+    method: 'post',
   })
 }
