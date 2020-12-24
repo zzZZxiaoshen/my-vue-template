@@ -52,6 +52,15 @@ export function createRole(role) {
     data:qs.stringify(role)
   })
 }
+//删除角色
+export function deleteRole(param) {
+  return request({
+    url: '/api/role/delete',
+    method: 'post',
+    data:qs.stringify(param)
+  })
+}
+
 // 查询所有角色
 export function listAllRole(role) {
   return request({

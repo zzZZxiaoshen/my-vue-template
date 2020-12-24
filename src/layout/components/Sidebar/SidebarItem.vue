@@ -12,7 +12,7 @@
       <template slot="title">
         <item v-if="item.meta" :icon="item.meta && item.meta.icon" :title="item.meta.title" />
       </template>
-      <sidebar-item
+        <sidebar-item
         v-for="child in item.children"
         :key="child.path"
         :is-nest="true"

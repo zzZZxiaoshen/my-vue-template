@@ -162,6 +162,10 @@ export default {
     handleUpdate(row){
       this.$router.push(`/sys/user/edit/${row.email}`)
     },
+    handleDelete(row){
+    debugger
+      console.log("-------------:"+row.id)
+    }
   }
 }
 </script>

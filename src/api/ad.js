@@ -15,3 +15,10 @@ export function findActivityList(title, pageQuery) {
     data:qs.stringify(data)
   })
 }
+
+export function countActivityInfo() {
+  return request({
+    url: '/api/activity/info',
+    method: 'post',
+  })
+}

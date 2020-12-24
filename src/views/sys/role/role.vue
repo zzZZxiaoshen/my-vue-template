@@ -19,9 +19,9 @@
         </template>
       </el-table-column>
       <el-table-column align="center" label="Operations">
-        <template slot-scope="scope">
-          <el-button type="primary" size="small" @click="handleEdit(scope)">Edit</el-button>
-          <el-button type="danger" size="small" @click="handleDelete(scope)">Delete</el-button>
+        <template slot-scope="{row}">
+          <el-button type="primary" size="small" @click="handleEdit(row)">Edit</el-button>
+          <el-button type="danger" size="small" @click="handleDelete(row)">Delete</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -71,7 +71,7 @@
 <script>
   import path from 'path'
   import { deepClone } from '@/utils'
-  import {listRole, listPermission,createRole,savePermissionTree} from '@/api/sys.js'
+  import {listRole, listPermission,createRole,savePermissionTree,deleteRole} from '@/api/sys.js'
   import Pagination from '@/components/Pagination'
 
   const defaultRole = {
@@ -268,7 +268,7 @@
         this.dialogVisible = true
       },
       //角色编辑
-      handleEdit(scope) {
+      handleEdit(row) {
         function replaceRoute(sysPermissions) {
           for (let sysPermission of sysPermissions) {
             sysPermission.permission= sysPermission.permission.replace(/\:/g, '/')
@@ -288,7 +288,7 @@
         this.dialogType = 'edit'
         this.dialogVisible=true
         this.checkStrictly=true
-        this.role = deepClone(scope.row)
+        this.role = deepClone(row)
         this.$nextTick(() =>{
           //处理替换后端返回不符合要求权限路由字符串信息
           replaceRoute(this.role.sysPermissions);
@@ -297,32 +297,51 @@
           this.checkStrictly = false
         })
       },
-      handleDelete() {
-
+      //删除角色
+      handleDelete(row) {
+        deleteRole({id:row.id}).then(res=>{
+          this.$notify({
+            title: '成功',
+            message: res.msg,
+            type: "success",
+            duration: 2000
+          });
+          window.location.reload();
+        })
       },
       //新增角色 保存角色按钮
        confirmRole(formName) {
-        console.log("保存角色")
+       console.log("保存角色")
        const isEdit = this.dialogType === 'edit'
         this.loading = true;
         //构建保存角色信息
         const role = Object.assign({}, this.role);
         this.$refs[formName].validate(async(validate)=>{
-          let roleId;
-          if (isEdit) {
-            roleId= this.role.id
-          } else {
-            const {data} = await createRole(role);
-            roleId = data.data.roleId;
+          try {
+            let roleId;
+            if (isEdit) {
+              roleId = this.role.id
+            } else {
+              const {data} = await createRole(role);
+              roleId = data.data.roleId;
+            }
+            this.loading = false;
+            this.dialogVisible = false
+            //构建保存路由权限信息
+            const checkedKeys = this.$refs.tree.getCheckedKeys()
+            this.routesCheckArr = [];
+            this.generateRoutesCheck(deepClone(this.serviceRoutes), checkedKeys, roleId)
+            await savePermissionTree(this.routesCheckArr)
+            window.location.reload();
+          } catch (e) {
+            this.$notify({
+              title: '提示',
+              message: e,
+              type: "warn",
+              duration: 2000
+            });
+            this.loading = false;
           }
-        this.loading = false;
-        this.dialogVisible = false
-        //构建保存路由权限信息
-        const checkedKeys = this.$refs.tree.getCheckedKeys()
-        this.routesCheckArr = [];
-        this.generateRoutesCheck(deepClone(this.serviceRoutes), checkedKeys,roleId)
-        await savePermissionTree(this.routesCheckArr)
-        window.location.reload();
         })
       }
     }
