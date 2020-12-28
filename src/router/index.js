@@ -154,11 +154,29 @@ export const asyncRoutes = [
     ]
   },
   {
+    path: '/icons',
+    component: Layout,
+    redirect:"/index",
+    children:[
+      {
+        path: '/index',
+        component: () => import('@/views/icons/index'),
+        name: 'Icons',
+        meta: {
+          title: 'Icons',
+          icon: 'icon' ,
+          noCache:true,
+          roles:["admin"]
+        }
+      },
+    ]
+  },
+  {
     path: '/test',
     component: Layout,
     redirect:"/test/test",
     name: 'Test',
-    hidden: true,
+    hidden: false,
     meta: {
       title: 'test',
       icon: 'documentation' ,
@@ -170,7 +188,7 @@ export const asyncRoutes = [
         path: 'test',
         component: () => import('@/views/test/test'),
         name: 'test',
-        hidden: true,
+        hidden: false,
         meta: {
           title: 'test',
           icon: 'test' ,

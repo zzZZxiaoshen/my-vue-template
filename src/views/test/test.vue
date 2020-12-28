@@ -1,26 +1,66 @@
 <template>
     <div class="app-container">
+<!--      <el-button-->
+<!--        class="filter-item"-->
+<!--        type="primary"-->
+<!--        icon="el-icon-search"-->
+<!--        style="margin-left: 10px"-->
+<!--        @click="changeClick"-->
+<!--        ></el-button>-->
+<!--      <canvas id="myChart" width="400" height="260"></canvas>-->
+<!--  <div class="content">-->
+<!--    <div class="b">1</div>-->
+<!--    <div class="b">2</div>-->
+<!--    <div class="b">3</div>-->
+<!--    <div class="b">4</div>-->
+<!--    <div class="b">5</div>-->
+<!--    <div class="b">6</div>-->
+<!--    <div class="b">7</div>-->
+<!--    <div class="b">8</div>-->
+<!--    <div class="b">9</div>-->
+<!--  </div>-->
 
-      <el-button
-        class="filter-item"
-        type="primary"
-        icon="el-icon-search"
-        style="margin-left: 10px"
-        @click="changeClick"
-        ></el-button>
-      <canvas id="myChart" width="400" height="260"></canvas>
+<!--       复制黏贴测试用例 vue框架下使用Clipboard插件实现功能-->
+      <!-- Target -->
+      <input id="foo" value="https://github.com/zenorocha/clipboard.js.git">
+
+      <!-- Trigger data-clipboard-target="#foo"-->
+      <button class="btn" data-clipboard-target="#foo"  @click="handleClipboard(null,$event)">
+        <img src="assets/clippy.svg" alt="Copy to clipboard">
+      </button>
     </div>
 </template>
 
+
 <script>
+  import clipboard from '@/utils/clipboard'
+
   const F2 = require('@antv/f2');
+
     export default {
         name: "test",
         created() {
-
-
         },
       methods:{
+        handleClipboard(text,event){
+          clipboard(text, event)
+        },
+        Clipboard(){
+          let clipboard = new ClipboardJS('.btn');
+
+          clipboard.on('success', function(e) {
+            console.info('Action:', e.action);
+            console.info('Text:', e.text);
+            console.info('Trigger:', e.trigger);
+
+            e.clearSelection();
+          });
+
+          clipboard.on('error', function(e) {
+            console.error('Action:', e.action);
+            console.error('Trigger:', e.trigger);
+          });
+        },
         changeClick(){
           const data = [
             { genre: 'Sports', sold: 275 },
@@ -50,5 +90,16 @@
 </script>
 
 <style scoped>
-
+  .content {
+    padding: 10px;
+    display: grid;
+    grid-template-columns: auto auto auto;
+    grid-template-rows: auto auto auto;
+    height: 780px;   //padding 有个20的宽度
+    background-color: #000;
+    grid-gap: 10px;
+  }
+  .b {
+    background-color: yellow;
+  }
 </style>
