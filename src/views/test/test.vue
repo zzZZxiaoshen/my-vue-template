@@ -21,13 +21,25 @@
 <!--  </div>-->
 
 <!--       复制黏贴测试用例 vue框架下使用Clipboard插件实现功能-->
-      <!-- Target -->
-      <input id="foo" value="https://github.com/zenorocha/clipboard.js.git">
+<!--      &lt;!&ndash; Target &ndash;&gt;-->
+<!--      <input id="foo" value="https://github.com/zenorocha/clipboard.js.git">-->
 
-      <!-- Trigger data-clipboard-target="#foo"-->
-      <button class="btn" data-clipboard-target="#foo"  @click="handleClipboard(null,$event)">
-        <img src="assets/clippy.svg" alt="Copy to clipboard">
-      </button>
+<!--      &lt;!&ndash; Trigger data-clipboard-target="#foo"&ndash;&gt;-->
+<!--      <button class="btn" data-clipboard-target="#foo"  @click="handleClipboard(null,$event)">-->
+<!--        <img src="assets/clippy.svg" alt="Copy to clipboard">-->
+<!--      </button>-->
+
+      <article>
+        <p>
+          迪斯尼电影<cite>海的女儿</cite>（<cite>The Little Mermaid</cite>）于 1989 年首次登上银幕。
+        </p>
+        <aside>
+          在首次发行期间，该片便收获了 8700 万美元的票房。
+        </aside>
+        <p>
+          更多有关该电影的信息…
+        </p>
+      </article>
     </div>
 </template>
 

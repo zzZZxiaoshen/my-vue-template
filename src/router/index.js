@@ -156,10 +156,10 @@ export const asyncRoutes = [
   {
     path: '/icons',
     component: Layout,
-    redirect:"/index",
+    redirect:"/icons/index",
     children:[
       {
-        path: '/index',
+        path: 'index',
         component: () => import('@/views/icons/index'),
         name: 'Icons',
         meta: {
@@ -168,6 +168,57 @@ export const asyncRoutes = [
           noCache:true,
           roles:["admin"]
         }
+      },
+    ]
+  },
+  {
+    path: '/theme',
+    component: Layout,
+    redirect:"/theme/index",
+    children:[
+      {
+        path: 'index',
+        component: () => import('@/views/theme/index'),
+        name: 'theme',
+        meta: {
+          title: 'Theme',
+          icon: 'theme' ,
+          noCache:true,
+          roles:["admin"]
+        }
+      },
+    ]
+  },
+  {
+    path: '/excel',
+    component: Layout,
+    redirect:"/excel/export-excel",
+    meta: {
+      title: 'Excel',
+      icon: 'excel'
+    },
+    children:[
+      {
+        path: 'export-excel',
+        component: () => import('@/views/excel/export-excel'),
+        name: 'ExportExcel',
+        meta: {
+          title: 'Export Excel',
+          icon: 'ExportExcel' ,
+          noCache:true,
+          roles:["admin"]
+        },
+      },
+      {
+        path: 'export-excel1',
+        component: () => import('@/views/excel/export-excel'),
+        name: 'ExportExcel',
+        meta: {
+          title: 'Export Excel',
+          icon: 'ExportExcel' ,
+          noCache:true,
+          roles:["admin"]
+        },
       },
     ]
   },
