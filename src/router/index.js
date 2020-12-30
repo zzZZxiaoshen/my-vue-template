@@ -210,11 +210,11 @@ export const asyncRoutes = [
         },
       },
       {
-        path: 'export-excel1',
-        component: () => import('@/views/excel/export-excel'),
-        name: 'ExportExcel',
+        path: 'upload-excel',
+        component: () => import('@/views/excel/upload-excel'),
+        name: 'UploadExcel',
         meta: {
-          title: 'Export Excel',
+          title: 'Upload Excel',
           icon: 'ExportExcel' ,
           noCache:true,
           roles:["admin"]

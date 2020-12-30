@@ -61,6 +61,7 @@ export default {
       this.$refs['excel-upload-input'].click()
     },
     handleClick(e) {
+    debugger
       const files = e.target.files
       const rawFile = files[0] // only use files[0]
       if (!rawFile) return
@@ -79,10 +80,12 @@ export default {
       }
     },
     readerData(rawFile) {
+    debugger
       this.loading = true
       return new Promise((resolve, reject) => {
         const reader = new FileReader()
         reader.onload = e => {
+        debugger
           const data = e.target.result
           const workbook = XLSX.read(data, { type: 'array' })
           const firstSheetName = workbook.SheetNames[0]
