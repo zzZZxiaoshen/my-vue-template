@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Layout from  '@/layout'
+import componentsRouter from './modules/components'
 
 Vue.use(Router)
 
@@ -61,7 +62,7 @@ export const asyncRoutes = [
     redirect:"/active/list",
     name: 'Active',
     meta: {
-      title: '活动管理',
+      title: 'Active',
       icon: 'documentation' ,
       affix: true,
       roles:["admin","测试"]
@@ -104,7 +105,7 @@ export const asyncRoutes = [
     redirect:"/sys/user/list",
     name: 'Sys',
     meta: {
-      title: '账户管理',
+      title: 'Account',
       icon: 'documentation' ,
       affix: true,
       roles:["admin"]
@@ -222,6 +223,7 @@ export const asyncRoutes = [
       },
     ]
   },
+  componentsRouter,
   {
     path: '/test',
     component: Layout,
@@ -249,6 +251,7 @@ export const asyncRoutes = [
       }
     ]
   },
+
 ];
 
 
