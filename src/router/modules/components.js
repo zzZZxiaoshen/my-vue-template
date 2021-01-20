@@ -35,10 +35,43 @@ const componentsRouter = {
     {
       path: 'dnd',
       component: () => import('@/views/components-demo/dnd-list'),
-      name: 'dndList',
+      name: 'DndList',
       meta: {
-        title: 'dnd List',
+        title: 'Dnd List',
         icon: 'dnd' ,
+        noCache:true,
+        roles:["admin"]
+      }
+    },
+    {
+      path: 'count',
+      component: () => import('@/views/components-demo/count-to'),
+      name: 'CountTo',
+      meta: {
+        title: 'Count to',
+        icon: 'count' ,
+        noCache:true,
+        roles:["admin"]
+      }
+    },
+    {
+      path: 'top',
+      component: () => import('@/views/components-demo/back-to-top'),
+      name: 'backTop',
+      meta: {
+        title: 'Back Top',
+        icon: 'top' ,
+        noCache:true,
+        roles:["admin"]
+      }
+    },
+    {
+      path: 'sticky',
+      component: () => import('@/views/components-demo/sticky'),
+      name: 'sticky',
+      meta: {
+        title: 'Sticky',
+        icon: 'sticky' ,
         noCache:true,
         roles:["admin"]
       }

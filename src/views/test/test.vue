@@ -8,6 +8,27 @@
 <!--        @click="changeClick"-->
 <!--        ></el-button>-->
 <!--      <canvas id="myChart" width="400" height="260"></canvas>-->
+<!--网格布局方案1-->
+
+      <div class="box">
+        <div class="content">
+          <div class="b">1</div>
+          <div class="b">2</div>
+          <div class="b">3</div>
+        </div>
+        <div class="content">
+          <div class="b">4</div>
+          <div class="b">5</div>
+          <div class="b">6</div>
+        </div>
+        <div class="content">
+          <div class="b">7</div>
+          <div class="b">8</div>
+          <div class="b">9</div>
+        </div>
+      </div>
+
+<!--网格布局方案2-->
 <!--  <div class="content">-->
 <!--    <div class="b">1</div>-->
 <!--    <div class="b">2</div>-->
@@ -102,16 +123,38 @@
 </script>
 
 <style scoped>
-  .content {
+/*方案1*/
+  .box {
     padding: 10px;
-    display: grid;
-    grid-template-columns: auto auto auto;
-    grid-template-rows: auto auto auto;
-    height: 780px;   //padding 有个20的宽度
+    padding-bottom: 0;
+    padding-right: 0;
+    display: flex;
+    flex-direction: column;
+    height: 800px;
+    width: calc(100vw -0px);
     background-color: #000;
-    grid-gap: 10px;
+  }
+  .content {
+    display: flex;
+    margin-bottom: 10px;
+    flex: 1
   }
   .b {
+    flex: 1;
+    margin-right: 10px;
     background-color: yellow;
   }
+/*方案2*/
+/*  .content {*/
+/*    padding: 10px;*/
+/*    display: grid;*/
+/*    grid-template-columns: auto auto auto;*/
+/*    grid-template-rows: auto auto auto;*/
+/*    height: 780px;   //padding 有个20的宽度*/
+/*    background-color: #000;*/
+/*    grid-gap: 10px;*/
+/*  }*/
+/*  .b {*/
+/*    background-color: yellow;*/
+/*  }*/
 </style>

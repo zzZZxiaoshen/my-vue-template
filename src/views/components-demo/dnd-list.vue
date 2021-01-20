@@ -19,10 +19,12 @@
     components: {DndList},
     data() {
       return {
-        list1:["1[George] Tkwip Uivh Xfviqlwp Klywoslrk Mbcpzgof Weodttj Pvp Vbkfrhhuw Iwinnh Ssiow "
-        ,"2[Nancy] Jroksxl Kgpm Mxbf Coul Sfnkcvksy Vnxarlbj "
-        ,"3[George] Sfoxpv Hkvqbd Bylpxr Kdspayno Wylpzs Donjcsq "
-        ,"12[Daniel] Bcigiva Pbhpqp Chnf Frx Xmkrmol Djuiacf Epyebxfb "],
+        list1:[
+        {id:1,author:"[Gran]",title:"Tkwip Uivh Xfviqlwp Klywoslrk Mbcpzgof Weodttj Pvp Vbkfrhhuw Iwinnh Ssiow "},
+        {id:2,author:"[Nancy]",title:"Jroksxl Kgpm Mxbf Coul Sfnkcvksy Vnxarlbj "},
+        {id:3,author:"[George]",title:"Sfoxpv Hkvqbd Bylpxr Kdspayno Wylpzs Donjcsq "},
+        {id:12,author:"[Daniel]",title:"Bcigiva Pbhpqp Chnf Frx Xmkrmol Djuiacf Epyebxfb "},
+        ],
         list2:[]
       }
     },
