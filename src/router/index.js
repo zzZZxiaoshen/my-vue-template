@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Layout from  '@/layout'
 import componentsRouter from './modules/components'
+import tableRouter from "./modules/table";
 
 Vue.use(Router)
 
@@ -224,6 +225,7 @@ export const asyncRoutes = [
     ]
   },
   componentsRouter,
+  tableRouter,
   {
     path: '/test',
     component: Layout,
